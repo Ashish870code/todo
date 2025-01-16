@@ -1,25 +1,25 @@
 <?php
 require_once 'todo_function.php';
 
-// Handle form submissions
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['task'])) {
-        // Add a new task
+        
         addTaskOrComment($_POST['task'], 'task');
     } elseif (isset($_POST['comment'])) {
-        // Add a new comment
+        
         addTaskOrComment($_POST['comment'], 'comment ', $_POST['task_id']);
     }
 }
 
-// Handle task deletion
+
 if (isset($_GET['delete'])) {
     deleteTaskOrComment($_GET['delete']);
     header("Location: index.php");
     exit();
 }
 
-// Fetch all tasks and comments
+
 $tasks = getTasksAndComments();
 ?>
 
@@ -43,13 +43,13 @@ $tasks = getTasksAndComments();
     <div class="container">
         <h1>My To-Do List</h1>
 
-        <!-- Add Task Form -->
+        
         <form method="POST" action="">
             <input type="text" name="task" placeholder="New Task" required>
             <button type="submit">Add Task</button>
         </form>
 
-        <!-- Display Tasks and Comments -->
+        
         <table>
             <thead>
                 <tr>
