@@ -1,20 +1,30 @@
 <?php
 require_once 'db.php';
 
-function addTask($task) {
+// Add a task or comment
+function addTaskOrComment($content, $type, $parent_id = null) {
     global $pdo;
-    $stmt = $pdo->prepare("INSERT INTO tasks (task) VALUES (:task)");
-    $stmt->bindParam(':task', $task);
+    $stmt = $pdo->prepare("INSERT INTO tasks (type, content, parent_id) VALUES (:type, :content, :parent_id)");
+    $stmt->bindParam(':type', $type);
+    $stmt->bindParam(':content', $content);
+    $stmt->bindParam(':parent_id', $parent_id);
     $stmt->execute();
 }
 
-function getTasks() {
+// Fetch tasks and comments
+function getTasksAndComments($parent_id = null) {
     global $pdo;
-    $stmt = $pdo->query("SELECT * FROM tasks");
+    $query = "SELECT * FROM tasks WHERE parent_id " . ($parent_id ? "= :parent_id" : "IS NULL") . " ORDER BY created_at ASC";
+    $stmt = $pdo->prepare($query);
+    if ($parent_id) {
+        $stmt->bindParam(':parent_id', $parent_id);
+    }
+    $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function deleteTask($id) {
+// Delete a task or comment
+function deleteTaskOrComment($id) {
     global $pdo;
     $stmt = $pdo->prepare("DELETE FROM tasks WHERE id = :id");
     $stmt->bindParam(':id', $id);
